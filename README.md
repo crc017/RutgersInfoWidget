@@ -1,0 +1,2 @@
+# RutgersInfoWidget
+Giphy Api Application
