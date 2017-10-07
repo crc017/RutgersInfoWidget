@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>GifTastic</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<style>
+  .container{
+    width: 100%;
+  }
+  .jumbotron{
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+  <section class="container">
+    <div class="jumbotron">
+      <div id="gifButtons">
+      </div>
+
+      <form id="userInput">
+        <label for="topicInput">Try the magic:</label>
+        <input type="text" id="topicInput"><br>
+        <input id="addTopic" type="submit" value="Magic Button:">
+      </form>
+    </div>
+
+    <div id="giphySection">
+    </div>
+
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+
+      var topics = ["The Lord of the Rings", "The Matrix", "Cool Runnings", "Transformers", "Kool-Aid", "Rugrats", "Thunder Cats", "Friends"];
+    
+
+      function displayButtons() {
+
+          $("#gifButtons").empty();
+
+          for(i = 0; i < topics.length; i++){
+              var buttonGif = $("<button>");
+              buttonGif.attr("class", "gifButton");
+              buttonGif.attr("data-name", topics[i]);
+              buttonGif.text(topics[i]);
+              $("#gifButtons").prepend(buttonGif);
+              };
+      }
+
+
+
+      $("#addTopic").on("click", function() {
+      
+        event.preventDefault();
+        var addTopic = $("#topicInput").val().trim()
+        topics.push(addTopic);
+        displayButtons();
+      });
+
+       displayButtons();
+
+      $("button").click(function() {
+      console.log("clickie-click")
+      });  
+
+
+
+      $(document).on("click", "button", function() {
+        console.log("clicked button!!!")
+
+        var subject = $(this).attr("data-name")
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + subject + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+        $.ajax({
+          type: "GET",
+          url: queryURL,
+          data: "json",
+      }).done(function(response){
+
+          $("#giphySection").empty();
+
+          var results = response.data; // response.data holds the actual information that came back from the server
+
+          for (var i = 0; i < results.length; i++) { // Loops through all items in the results array
+            console.log(results[i]);
+            var gifDiv = $("<div class='item' id='stillGIF'>"); // Creates a new DIV element and stores it in gifDiv
+            var rating = $("<p>").text("Rating: " + results[i].rating); // Creates a new P element and puts the rating text into it
+
+            var gifImg = $("<img>"); // Creates a new IMG element and stores in personImage
+            var gifImgAnimate = results[i].images.fixed_height.url;
+            var gifImgStill = results[i].images.fixed_height_still.url;
+            console.log(results[i].images);
+
+            gifImg.attr("src", gifImgStill); // Sets the images' URL to result URL
+            gifImg.attr("data-state", 'still');
+            gifImg.attr("animateSrc", gifImgAnimate);
+            gifImg.attr("stillSrc", gifImgStill);
+            gifDiv.append(gifImg); // Puts the IMG element into gifDiv on top of the rating
+           
+            gifDiv.append(rating); // Opposite of append. Puts the rating P element at the beginning of the gifDiv element
+            console.log(gifImg);
+            $("#giphySection").append(gifDiv);
+
+            //displayButtons();
+          };
+
+              $("img").on("click", function() {
+                console.log("stillGIF");
+                var state = $(this).attr("data-state");
+                var animate = $(this).attr("animateSrc");
+                var still = $(this).attr("stillSrc");
+                console.log(state);
+                console.log(this);
+
+                if(state === 'still'){
+                  $(this).attr("src", animate);
+                  $(this).attr("data-state", 'animate');
+                };
+                if(state === 'animate'){
+                  $(this).attr("src", still);
+                  $(this).attr("data-state", 'still');
+                };
+
+              });
+
+      });
+          
+  });
+
+   
+});
+  </script>
+</body>
+
+</html>
