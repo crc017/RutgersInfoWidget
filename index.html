@@ -7,38 +7,108 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 <style>
+
+  body{
+  font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+  font-size: 24px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 500;
+  line-height: 26.4px;
+  color: white;
+  background-color: black;
+  }
   .container{
     width: 100%;
   }
   .jumbotron{
     width: 100%;
+    margin: auto;
+    background-color: black;
   }
+  #giphySection {
+    width: 100%;
+    border-style: solid;
+    border-width: 2px;
+  }
+  
+  img {
+    width: 300px;
+  }
+
+  h1 {
+    font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+    padding: 20px;
+  }
+
+  #gifButtons{
+    width: 80%;
+    margin: auto;
+    padding: 50px;
+    border-style: dashed;
+    border-width: 2px;
+  }
+  #userInput{
+    width: 50%;
+    margin: auto;
+    align-content: center;
+    float: center;
+    padding: 30px;
+  }
+  
+  #addTopic{
+    width: 40%;
+    margin: auto;
+    padding: 10px;
+  }
+
+  button {
+    margin: 10px;
+    padding: 10px;
+    font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+  }
+
+  .rating {
+    font-size: 15px;
+    font-family: Copperplate, "Copperplate Gothic Light", fantasy;
+  }
+  
+  #clickNotify {
+    font-size: 20px;
+  }
+
+
 </style>
 </head>
 <body>
-  <section class="container">
+  
     <div class="jumbotron">
-      <div id="gifButtons">
+      <h1> Awesome Shows,  Awesome Movies,  Awesome Whatever...</h1>
+      <div id="gifButtons" class="row">
       </div>
 
       <form id="userInput">
         <label for="topicInput">Try the magic:</label>
-        <input type="text" id="topicInput"><br>
-        <input id="addTopic" type="submit" value="Magic Button:">
+        <input type="text" id="topicInput">
+        <br>
+        <br>
+        <input id="addTopic" type="submit" value="Magic Button">
       </form>
     </div>
-
-    <div id="giphySection">
-    </div>
-
-  </section>
+  
+    <section class="container">
+      <p id="clickNotify"></p>
+      <div id="giphySection" class="row">
+      </div>
+    </section>
+  
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript">
 
     $(document).ready(function() {
 
-      var topics = ["The Lord of the Rings", "The Matrix", "Cool Runnings", "Transformers", "Kool-Aid", "Rugrats", "Thunder Cats", "Friends"];
+      var topics = ["The Lord of the Rings", "The Matrix", "Cool Runnings", "Transformers", "Kool-Aid", "Rugrats", "Thunder Cats", "Avatar", "Interstellar"];
     
 
       function displayButtons() {
@@ -66,14 +136,10 @@
 
        displayButtons();
 
-      $("button").click(function() {
-      console.log("clickie-click")
-      });  
 
 
 
       $(document).on("click", "button", function() {
-        console.log("clicked button!!!")
 
         var subject = $(this).attr("data-name")
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + subject + "&api_key=dc6zaTOxFJmzC&limit=10";
@@ -90,8 +156,9 @@
 
           for (var i = 0; i < results.length; i++) { // Loops through all items in the results array
             console.log(results[i]);
+            $("#clickNotify").html("*click gif to play/pause*");
             var gifDiv = $("<div class='item' id='stillGIF'>"); // Creates a new DIV element and stores it in gifDiv
-            var rating = $("<p>").text("Rating: " + results[i].rating); // Creates a new P element and puts the rating text into it
+            var rating = $("<p class='rating'>").text("Rating: " + results[i].rating); // Creates a new P element and puts the rating text into it
 
             var gifImg = $("<img>"); // Creates a new IMG element and stores in personImage
             var gifImgAnimate = results[i].images.fixed_height.url;
